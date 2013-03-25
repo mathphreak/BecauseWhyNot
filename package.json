@@ -1,0 +1,17 @@
+{
+  "name": "BecauseWhyNot",
+  "version": "0.0.1",
+  "description": "A DCPU-16 emulator/assembler/macro set written in CoffeeScript because, well, why not?",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mathphreak/BecauseWhyNot.git"
+  },
+  "author": "mathphreak",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "668539bdba79cd7906755035b8fe0fb1dfe3a79d",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "coffee-script": "~1.6.2"
+  }
+}
