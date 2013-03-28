@@ -45,7 +45,7 @@ vows.describe("Emulation").addBatch(
             expect(emulator.ram[0x2009]).to.be(emulator.ram[0x2000])
             expect(emulator.ram[0x200a]).to.be(emulator.ram[0x2000])
         "X is 0x0040": (emulator) -> expect(emulator.X).to.be(0x0040)
-    "after running that weird thing from 0x10c Standards Committee":
+    "after running github/0x10cStandardsCommittee/0x10c-Standards/TESTS/high-nerd.dasm16":
         topic: ->
             emulator = new Emulator
             nextRam = do ->
