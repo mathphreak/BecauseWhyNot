@@ -3,7 +3,7 @@
 
 expect = require "expect.js"
 vows = require "vows"
-Emulator = require "./emulator"
+Emulator = require "../emulator"
 
 vows.describe("Emulation").addBatch(
     "after running Notch's test code":
@@ -67,4 +67,4 @@ vows.describe("Emulation").addBatch(
         "C is 0xfb50": (emulator) ->
             expect(emulator.C).to.be(0xfb50)
         "A is 0": (emulator) -> expect(emulator.A).to.be(0)
-).run()
+).export(module)

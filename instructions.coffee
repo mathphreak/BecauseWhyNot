@@ -15,8 +15,13 @@ class GeneralInstruction
 signed = (i) -> i - ((i << 1) & 0xffff)
 unsigned = (i) -> if i < 0 then 0x10000 + i else i
 coerce = (i) ->
-    if i < 0 then return unsigned i
-    if i > 0xffff then return i - 0x10000
+    if Math.round(i) isnt i
+        if i < 0
+            i = Math.ceil i
+        else
+            i = Math.floor i
+    if i < 0 then i = unsigned i
+    if i > 0xffff then i = i - 0x10000
     i
 
 class ModifyInstruction extends GeneralInstruction
@@ -146,13 +151,13 @@ class DIVInstruction extends ModifyInstruction
     run: (a, b) ->
         result = b / a
         @emulator.EX = ((b<<16)/a)&0xffff
-        unsigned result
+        coerce result
 
 class DVIInstruction extends ModifyInstruction
     run: (a, b) ->
         result = signed(b) / signed a
         @emulator.EX = ((signed(b)<<16)/signed(a))&0xffff
-        unsigned result
+        coerce result
 
 class MODInstruction extends ModifyInstruction
     run: (a, b) -> unsigned if a is 0 then 0 else b % a

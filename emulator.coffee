@@ -57,6 +57,9 @@ partiallyDecode = (value) ->
 
 class Instruction
     constructor: (@emulator, @binary) ->
+        if @binary is 0
+            @emulator.finished = yes
+            return
         @opcodeBits  = @binary & 0b11111
         @aTargetBits = (@binary & 0b1111110000000000) >> 10
         @bTargetBits = (@binary & 0b1111100000) >> 5
@@ -93,6 +96,8 @@ class Instruction
         @child = new ChildType @emulator
 
     execute: ->
+        if @binary is 0
+            return
         results = @child.execute @a, @b, @aTargetBits, @bTargetBits
         if results.changeA and targetType[@aTargetBits] isnt 'LITERAL'
             newA = results.newA
@@ -135,8 +140,12 @@ class Emulator
         @currPC = 0
         @interruptQueueing = off
         @skipping = no
+        @finished = no
 
     tick: ->
+        if @finished
+            console.log "Encountered instruction 0x0000, exiting"
+            process.exit 0
         @currPC = @PC++
         currInstruction = new Instruction @, @ram[@currPC]
         if @skipping

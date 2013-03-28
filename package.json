@@ -13,6 +13,11 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "coffee-script": "~1.6.2",
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "expect.js": "~0.2.0",
+    "vows": "~0.7.0"
+  },
+  "scripts": {
+    "test": "vows --spec"
   }
 }
