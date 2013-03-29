@@ -1,4 +1,4 @@
 language: node_js
-before_script: "npm install --dev"
+before_script: "echo $PATH"
 node_js:
     - "0.8"
