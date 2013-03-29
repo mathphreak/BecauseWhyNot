@@ -1,6 +1,3 @@
 language: node_js
-before_script: 
-    - "echo $PATH"
-    - "ls -A ./node_modules"
 node_js:
     - "0.8"

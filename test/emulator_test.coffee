@@ -4,14 +4,16 @@
 expect = require "expect.js"
 vows = require "vows"
 Emulator = require "../emulator"
+test_helpers = require "../test_helpers"
+
+makeNextRam = test_helpers.makeNextRam
+elapse = test_helpers.elapse
 
 vows.describe("Emulation").addBatch(
     "after running Notch's test code":
         topic: ->
             emulator = new Emulator
-            nextRam = do ->
-                idx = 0
-                return (ist...) -> emulator.ram[idx++] = i for i in ist
+            nextRam = makeNextRam emulator
             nextRam 0x7c01, 0x0030          # SET A, 0x30
             nextRam 0x7fc1, 0x0020, 0x1000  # SET [0x1000], 0x20
             nextRam 0x7803, 0x1000          # SUB A, [0x1000]
@@ -29,9 +31,7 @@ vows.describe("Emulation").addBatch(
             nextRam 0x946f                  # SHL X, 4              :testsub
             nextRam 0x6381                  # SET PC, POP
             nextRam 0x0000                  #                       :crash
-            while not emulator.finished
-                emulator.tick()
-            emulator
+            elapse emulator
         "ram[0x2000..0x200a] is all ram[0x2000]": (emulator) ->
             expect(emulator.ram[0x2000]).to.be(emulator.ram[0x2000])
             expect(emulator.ram[0x2001]).to.be(emulator.ram[0x2000])
@@ -48,9 +48,7 @@ vows.describe("Emulation").addBatch(
     "after running github/0x10cStandardsCommittee/0x10c-Standards/TESTS/high-nerd.dasm16":
         topic: ->
             emulator = new Emulator
-            nextRam = do ->
-                idx = 0
-                return (ist...) -> emulator.ram[idx++] = i for i in ist
+            nextRam = makeNextRam emulator
             nextRam 0x7c41, 0x01f4 # SET C, 500
             nextRam 0x7c42, 0x01f3 # ADD C, 499
             nextRam 0x7c43, 0x0063 # SUB C, 99
@@ -61,9 +59,7 @@ vows.describe("Emulation").addBatch(
             nextRam 0x8401         # SET A, 0
             nextRam 0x8c45         # MLI C, 2
             nextRam 0x9047         # DVI C, 3
-            while not emulator.finished
-                emulator.tick()
-            emulator
+            elapse emulator
         "C is 0xfb50": (emulator) ->
             expect(emulator.C).to.be(0xfb50)
         "A is 0": (emulator) -> expect(emulator.A).to.be(0)

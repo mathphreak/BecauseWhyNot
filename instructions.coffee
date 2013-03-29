@@ -82,15 +82,16 @@ class IAQAction extends SpecialAction
         no
 
 class HWNAction extends SpecialAction
-    execute: (a) ->
-        # TODO
-        # figure out hardware
-        0
+    execute: (a) -> @emulator.hardware.length
 
 class HWQAction extends SpecialAction
     execute: (a) ->
-        # TODO
-        # still, figure out hardware
+        hardware = @emulator.hardware[a]
+        @emulator.A = hardware.getID() & 0xffff
+        @emulator.B = (hardware.getID() >> 16) & 0xffff
+        @emulator.C = hardware.getVersion()
+        @emulator.X = hardware.getManufacturer() & 0xffff
+        @emulator.Y = (hardware.getManufacturer() >> 16) & 0xffff
         no
 
 class HWIAction extends SpecialAction
@@ -112,7 +113,6 @@ specialActions[0x12] = HWIAction
 
 class SpecialInstruction extends GeneralInstruction
     execute: (a, b, aTargetBits, bTargetBits) ->
-        debugger
         ActionType = specialActions[bTargetBits]
         action = new ActionType @emulator
         result = action.execute a

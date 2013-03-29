@@ -141,8 +141,10 @@ class Emulator
         @interruptQueueing = off
         @skipping = no
         @finished = no
+        @hardware = []
 
     tick: ->
+        debugger
         if @finished
             console.log "Encountered instruction 0x0000, exiting"
             process.exit 0
@@ -156,5 +158,10 @@ class Emulator
         else
             currInstruction.execute()
             @SP = coerce @SP
+        @hardware.forEach (hw) -> hw.onTick()
+
+    addHardware: (newHW) ->
+        debugger
+        @hardware.push newHW
 
 module.exports = Emulator

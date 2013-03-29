@@ -9,7 +9,6 @@
   "author": "mathphreak",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "668539bdba79cd7906755035b8fe0fb1dfe3a79d",
   "dependencies": {
     "coffee-script": "~1.6.2",
     "underscore": "~1.4.4",
