@@ -22,7 +22,7 @@ vows.describe("HWN").addBatch(
             nextRam 0x0200 # HWN A
             elapse emulator
 
-        "HWQ returns 1": (emulator) -> expect(emulator.A).to.be(1)
+        "HWN returns 1": (emulator) -> expect(emulator.A).to.be(1)
     "but with two items":
         topic: ->
             emulator = new Emulator
@@ -32,5 +32,5 @@ vows.describe("HWN").addBatch(
             nextRam 0x0600 # HWN B
             elapse emulator
 
-        "HWQ returns 2": (emulator) -> expect(emulator.B).to.be(2)
+        "HWN returns 2": (emulator) -> expect(emulator.B).to.be(2)
 ).export(module)
