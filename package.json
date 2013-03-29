@@ -13,7 +13,6 @@
     "coffee-script": "~1.6.2",
     "underscore": "~1.4.4",
     "expect.js": "~0.2.0",
-    "grunt": "~0.4.1",
     "vows": "~0.7.0"
   },
   "scripts": {
