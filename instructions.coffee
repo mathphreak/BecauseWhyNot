@@ -96,8 +96,7 @@ class HWQAction extends SpecialAction
 
 class HWIAction extends SpecialAction
     execute: (a) ->
-        # TODO
-        # seriously, figure out hardware for pity's sake!
+        @emulator.hardware[a].onHWI()
         no
 
 specialActions = []
