@@ -8,15 +8,11 @@ hardware = require "../hardware"
 test_helpers = require "../test_helpers"
 
 makeNextRam = test_helpers.makeNextRam
-elapse = test_helpers.elapse
-
-GenericClock = hardware.GenericClock
-LEM1802 = hardware.LEM1802
+makeTopic = test_helpers.makeTopic
 
 vows.describe("HWI").addBatch(
     "a dummy piece of hardware":
-        topic: ->
-            emulator = new Emulator
+        topic: makeTopic (emulator) ->
             dummyHardware = new hardware.Hardware emulator
             dummyHardware.interrupted = no
             dummyHardware.onHWI = ->
@@ -24,7 +20,6 @@ vows.describe("HWI").addBatch(
             emulator.addHardware dummyHardware
             nextRam = makeNextRam emulator
             nextRam 0x8640 # HWI 0
-            elapse emulator
 
         "notices when we HWI it": (emulator) -> expect(emulator.hardware[0].interrupted).to.be.ok()
 ).export(module)

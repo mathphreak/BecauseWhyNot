@@ -36,7 +36,13 @@ extraSizeOf = (binary) ->
 
 class RAM
     constructor: ->
-        @[i] = 0 for i in [0..0xffff]
+        @storage = {}
+
+    get: (i) ->
+        @storage[i] ?= 0
+        @storage[i]
+
+    set: (i, val) -> @storage[i] = val
 
 partiallyDecode = (value) ->
     switch value
@@ -74,10 +80,10 @@ class Instruction
         if @aTarget is 'SP?'
             @a = @emulator.SP++
         if addsNextWord[@aTargetBits]
-            @aNewWord = @emulator.ram[@emulator.PC++]
+            @aNewWord = @emulator.ram.get @emulator.PC++
             @a += @aNewWord
         if targetType[@aTargetBits] is 'MEMORY_AT'
-            @a = @emulator.ram[@a]
+            @a = @emulator.ram.get @a
         @bTarget = partiallyDecode @bTargetBits
         if @opcodeBits isnt 0
             @bNewWord = 0
@@ -88,10 +94,10 @@ class Instruction
             if @bTarget is 'SP?'
                 @b = --@emulator.SP
             if addsNextWord[@bTargetBits]
-                @bNewWord = @emulator.ram[@emulator.PC++]
+                @bNewWord = @emulator.ram.get @emulator.PC++
                 @b += @bNewWord
             if targetType[@bTargetBits] is 'MEMORY_AT'
-                @b = @emulator.ram[@b]
+                @b = @emulator.ram.get @b
         ChildType = instructions[@opcodeBits]
         @child = new ChildType @emulator
 
@@ -102,41 +108,41 @@ class Instruction
         if results.changeA and targetType[@aTargetBits] isnt 'LITERAL'
             newA = results.newA
             if @aTarget is "SP?"
-                @emulator.ram[@emulator.SP] = newA
+                @emulator.ram.set @emulator.SP, newA
             if targetType[@aTargetBits] is 'MEMORY_AT'
                 ramTarget = @emulator[@aTarget]
                 if addsNextWord[@aTargetBits]
                     ramTarget += @aNewWord
-                @emulator.ram[ramTarget] = newA
+                @emulator.ram.set ramTarget, newA
             if targetType[@aTargetBits] is 'CONTENTS'
                 @emulator[@aTarget] = newA
         if results.changeB and targetType[@bTargetBits] isnt 'LITERAL'
             newB = results.newB
             if @bTarget is "SP?"
-                @emulator.ram[@emulator.SP] = newB
+                @emulator.ram.set @emulator.SP, newB
             if targetType[@bTargetBits] is 'MEMORY_AT'
                 if @bTarget is 0 then ramTarget = 0 else ramTarget = @emulator[@bTarget]
                 if addsNextWord[@bTargetBits]
                     ramTarget += @bNewWord
-                @emulator.ram[ramTarget] = newB
+                @emulator.ram.set ramTarget, newB
             if targetType[@bTargetBits] is 'CONTENTS'
                 @emulator[@bTarget] = newB
 
 class Emulator
     constructor: ->
         @ram = new RAM
-        @A  = 0
-        @B  = 0
-        @C  = 0
-        @X  = 0
-        @Y  = 0
-        @Z  = 0
-        @I  = 0
-        @J  = 0
-        @PC = 0
-        @SP = 0
-        @EX = 0
-        @IA = 0
+        @A   = 0
+        @B   = 0
+        @C   = 0
+        @X   = 0
+        @Y   = 0
+        @Z   = 0
+        @I   = 0
+        @J   = 0
+        @PC  = 0
+        @SP  = 0
+        @EX  = 0
+        @IA  = 0
         @currPC = 0
         @interruptQueueing = off
         @skipping = no
@@ -144,12 +150,12 @@ class Emulator
         @hardware = []
 
     tick: ->
-        debugger
         if @finished
-            console.log "Encountered instruction 0x0000, exiting"
-            process.exit 0
+            return
         @currPC = @PC++
-        currInstruction = new Instruction @, @ram[@currPC]
+        if @currPC is 0x13
+            debugger
+        currInstruction = new Instruction @, @ram.get @currPC
         if @skipping
             if currInstruction.child.isConditional
                 # just keep skipping
@@ -161,7 +167,6 @@ class Emulator
         @hardware.forEach (hw) -> hw.onTick()
 
     addHardware: (newHW) ->
-        debugger
         @hardware.push newHW
 
 module.exports = Emulator

@@ -51,7 +51,7 @@ class SpecialAction
 
 class JSRAction extends SpecialAction
     execute: (a) ->
-        @emulator.ram[coerce --@emulator.SP] = @emulator.PC
+        @emulator.ram.set(coerce(--@emulator.SP), @emulator.PC)
         @emulator.PC = a
         no
 
@@ -72,8 +72,8 @@ class IASAction extends SpecialAction
 class RFIAction extends SpecialAction
     execute: (a) ->
         @emulator.interruptQueueing = off
-        @emulator.A = @emulator.ram[coerce @emulator.SP++]
-        @emulator.PC = @emulator.ram[coerce @emulator.SP++]
+        @emulator.A = @emulator.ram.get coerce @emulator.SP++
+        @emulator.PC = @emulator.ram.get coerce @emulator.SP++
         no
 
 class IAQAction extends SpecialAction
