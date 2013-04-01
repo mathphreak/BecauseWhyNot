@@ -19,5 +19,5 @@ exports.makeTopic = (topicFunction) -> ->
             done = yes
         else
             emulator.tick()
-    , 10, @callback
+    , 1, @callback
     return

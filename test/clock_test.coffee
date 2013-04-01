@@ -13,6 +13,8 @@ makeTopic = test_helpers.makeTopic
 GenericClock = hardware.GenericClock
 LEM1802 = hardware.LEM1802
 
+delayTestStart = no
+
 vows.describe("Clock").addBatch(
     "if we look for the clock when there's only one piece of hardware":
         topic: makeTopic (emulator) ->
@@ -67,6 +69,10 @@ vows.describe("Clock").addBatch(
             nextRam 0x7ca1, 0xbeef
             nextRam 0x0000
             nextRam 0x0000
+            delayTestStart = new Date
  
-        "we waited for one second": (emulator) -> expect(emulator.Z).to.be(0xbeef)
+        "we waited": (emulator) -> expect(emulator.Z).to.be(0xbeef)
+
+        "one second passed": (emulator) ->
+            expect(new Date().getTime() - delayTestStart.getTime()).to.be.within(950, 1050)
 ).export(module)
